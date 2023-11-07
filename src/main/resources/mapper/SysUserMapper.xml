@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warmstone.hr.mapper.SysUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.warmstone.hr.entity.SysUser">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="is_enabled" property="enabled"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <resultMap id="UserRoleResultMap" type="com.warmstone.hr.dto.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <collection property="roles" ofType="com.warmstone.hr.dto.Role">
+            <id column="id" property="id"/>
+            <result column="role_code" property="roleCode"/>
+            <result column="role_name" property="roleName"/>
+        </collection>
+    </resultMap>
+
+    <sql id="BaseColumn">
+        id,username,password,salt,phone,mobile,is_enabled,create_time,update_time
+    </sql>
+
+    <select id="findUserByUsername" resultType="com.warmstone.hr.dto.User">
+        select 
+               t1.id
+               t1.username, 
+               t1.password,
+               t3.id role_id,
+               t3.role_code
+        from t_sys_user t1
+        left join t_sys_user_role ty2 on t1.id=t2.user_id
+        left join t_sys_role t3 on t2.role_id=t3.id
+        where t1.username=#{username}
+    </select>
+</mapper>
