@@ -1,5 +1,6 @@
 package com.warmstone.hr.dto;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -56,13 +57,16 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (CollectionUtil.isEmpty(roles)) {
+            return AuthorityUtils.NO_AUTHORITIES;
+        }
         String[] roleArray = roles.stream().map(Role::getRoleCode).toArray(String[]::new);
         return AuthorityUtils.createAuthorityList(roleArray);
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return this.password;
     }
 
     @Override
